@@ -5,6 +5,7 @@ and sends a push notification via ntfy.sh when spots open up.
 """
  
 import json
+import urllib.error
 import urllib.request
 import urllib.parse
 import sys
@@ -211,8 +212,15 @@ def main():
  
     try:
         data = fetch_courses()
+    except urllib.error.HTTPError as e:
+        print(f"❌ HTTP error {e.code}: {e.reason}")
+        print(f"   URL: {API_BASE}")
+        body = e.read().decode(errors="replace")[:500]
+        if body:
+            print(f"   Response body: {body}")
+        sys.exit(1)
     except Exception as e:
-        print(f"❌ Failed to fetch course data: {e}")
+        print(f"❌ Failed to fetch course data: {type(e).__name__}: {e}")
         sys.exit(1)
  
     available, new_but_full = check_availability(data)
