@@ -44,7 +44,7 @@ ALERT_NEW_COURSES = True
 # ntfy.sh topic — pick something unique and hard to guess
 # You'll subscribe to this same topic in the ntfy app on your phone
 # e.g. "my-ice-skating-alert-a7x9" — treat it like a password
-NTFY_TOPIC = "CHANGE-ME-ice-skating-12345"
+NTFY_TOPIC = "secret-streatham-ice-skate-alert-b46sm"
  
  
 # ──────────────────────────────────────────────
