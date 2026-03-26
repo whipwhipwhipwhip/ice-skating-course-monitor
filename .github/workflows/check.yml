@@ -22,4 +22,6 @@ jobs:
           python-version: "3.12"
 
       - name: Run availability check
-        run: python check_courses.py
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python -u check_courses.py 2>&1
