@@ -1,0 +1,25 @@
+name: Check Ice Skating Availability
+
+on:
+  # Run every hour
+  schedule:
+    - cron: "0 * * * *"
+
+  # Also allow manual runs (handy for testing)
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run availability check
+        run: python check_courses.py
