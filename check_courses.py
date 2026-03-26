@@ -35,6 +35,9 @@ API_FILTER = {
 TARGET_COURSES = [
     "Level 1&2 (Adults Only)",
     "Level 1 (Adults",           # In case a Level-1-only course appears
+    "Level 1 & 2 (All Ages)",
+    "Level 1 (All Ages)"
+
 ]
  
 # Set to True to also get notified about brand-new courses that match
@@ -136,7 +139,7 @@ def send_notification(hits: list[dict], *, new_course: bool = False):
  
     for hit in hits:
         if new_course:
-            title = "🆕 New Ice Skating Course Posted!"
+            title = "New Ice Skating Course Posted!"
             body = (
                 f"{hit['name']}\n"
                 f"Currently full ({hit['occupied']}/{hit['total_spaces']})\n"
@@ -147,7 +150,7 @@ def send_notification(hits: list[dict], *, new_course: bool = False):
             )
             priority = "default"
         else:
-            title = "🧊 Ice Skating Spaces Available!"
+            title = "Ice Skating Spaces Available!"
             body = (
                 f"{hit['name']}\n"
                 f"{hit['free_spaces']} space(s) free\n"
