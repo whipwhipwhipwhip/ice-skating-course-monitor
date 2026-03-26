@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 # ──────────────────────────────────────────────
  
 # The API endpoint (base URL)
-API_BASE = "https://activelambeth.courseprogress.co.uk/portal/api/HomePortal/booking/search"
+API_BASE = "https://activelambeth.coursepro.co.uk/portal/api/HomePortal/booking/search"
  
 # The filter from your original URL — ice skating courses at Streatham
 API_FILTER = {
@@ -158,7 +158,7 @@ def send_notification(hits: list[dict], *, new_course: bool = False):
             priority = "high"
  
         booking_url = (
-            "https://activelambeth.courseprogress.co.uk/onlinejoining/classes-results"
+            "https://activelambeth.coursepro.co.uk/onlinejoining/classes-results"
             "?filter=%7B%22showFullCourses%22:true,%22region%22:1,"
             "%22courseGroupCategory%22:%5B2%5D,%22centre%22:4%7D"
         )
