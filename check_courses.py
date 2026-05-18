@@ -34,9 +34,9 @@ API_FILTER = {
 # Use broad terms to cast a wide net, or specific names to be precise.
 TARGET_COURSES = [
     "Level 1&2 (Adults Only)",
-    "Level 1 (Adults",           # In case a Level-1-only course appears
+    "Level 2 (Adults",           # In case a Level-2-only course appears
     "Level 1 & 2 (All Ages)",
-    "Level 1 (All Ages)"
+    "Level 2 (All Ages)"
 
 ]
  
