@@ -1,94 +1,68 @@
-# 🧊 Ice Skating Course Monitor
+# Ice Skating Course Monitor
 
-Checks Active Lambeth's booking system for available spaces on the
-**New Skate UK - Level 1&2 (Adults Only)** course and sends you a push
-notification when a spot opens up.
+Watches Active Lambeth's booking system for open spaces on adult ice skating
+courses at Streatham Ice and Leisure Centre, and sends a push notification
+when a spot opens up.
 
 ## How it works
 
-1. A GitHub Actions cron job runs `check_courses.py` every hour
-2. The script calls the CourseProgress API (the same one the booking website uses)
-3. If any matching course has `free > 0` spaces, it sends a push notification via [ntfy.sh](https://ntfy.sh)
+1. A GitHub Actions cron job runs `check_courses.py` every hour.
+2. The script queries the CourseProgress API (the same one the booking site uses).
+3. If a course matching `TARGET_COURSES` has free spaces, it sends a push
+   notification via [ntfy.sh](https://ntfy.sh). It can also alert once when a
+   matching course is first posted, even if it's already full.
 
-No dependencies beyond Python's standard library.
+Standard library only, no dependencies.
 
-## Setup (10 minutes)
+## Setup
 
-### 1. Set up notifications
+### 1. Notifications
 
-1. Install the **ntfy** app on your phone ([iOS](https://apps.apple.com/app/ntfy/id1625396347) / [Android](https://play.google.com/store/apps/details?id=io.heckel.ntfy))
-2. Pick a unique topic name — treat it like a password, e.g. `my-skating-alert-k8m2`
-3. In the app, subscribe to that topic
-4. Edit `check_courses.py` and replace `CHANGE-ME-ice-skating-12345` with your topic name
+1. Install the **ntfy** app ([iOS](https://apps.apple.com/app/ntfy/id1625396347) / [Android](https://play.google.com/store/apps/details?id=io.heckel.ntfy)).
+2. Pick a hard-to-guess topic name, e.g. `my-skating-alert-k8m2`. Anyone who
+   knows it can read your alerts, so treat it like a password.
+3. Subscribe to that topic in the app.
 
-### 2. Push to GitHub
+### 2. GitHub
+
+1. Fork or push this repo to GitHub.
+2. Under **Settings → Secrets and variables → Actions**, add a repository
+   secret named `NTFY_TOPIC` with your topic name.
+3. Open the **Actions** tab and enable workflows if prompted.
+4. Click **Run workflow** to test it. The log should look like:
+
+```
+Checking courses at 2026-03-25 14:00 UTC
+Watching for: ['Level 1&2 (Adults Only)', ...]
+
+Full: New Skate UK - Level 1&2 (Adults Only) (12/12 occupied)
+
+No spaces available.
+```
+
+### Running locally
 
 ```bash
-# Create a new private repo on github.com, then:
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin git@github.com:YOUR_USERNAME/ice-skating-monitor.git
-git branch -M main
-git push -u origin main
+NTFY_TOPIC=your-topic python check_courses.py
 ```
 
-### 3. Enable GitHub Actions
-
-- Go to your repo → **Actions** tab
-- GitHub may ask you to enable workflows — click to allow
-- The check will now run every hour automatically
-- You can also click **"Run workflow"** to test it immediately
-
-### 4. Test it
-
-Click "Run workflow" in the Actions tab and check the logs. You should see:
-
-```
-🔍 Checking courses at 2026-03-25 14:00 UTC
-   Looking for: 'Level 1&2 (Adults Only)'
-
-❌ Full: New Skate UK - New Skate UK - Level 1&2 (Adults Only) — 12/12 occupied
-
-😴 No spaces available yet. Will check again next run.
-```
+Without `NTFY_TOPIC` set, the script prints what it would have sent instead.
 
 ## Customisation
 
-### Watch for a different course
+- **Courses**: edit `TARGET_COURSES` in `check_courses.py`. Each entry is a
+  case-insensitive substring match against the course name.
+- **Venue / activity**: edit `API_FILTER` (`centre`, `courseGroupCategory`).
+- **Frequency**: edit the cron expression in `.github/workflows/check.yml`,
+  e.g. `"*/30 * * * *"` for every 30 minutes. GitHub may delay scheduled runs
+  during busy periods.
 
-Edit `TARGET_COURSE` in `check_courses.py`. It does a case-insensitive
-substring match, so `"Level 3"` would match any course with "Level 3" in the name.
+## Notes
 
-### Change the check frequency
-
-Edit the cron expression in `.github/workflows/check.yml`:
-
-- `"0 * * * *"` = every hour (default)
-- `"*/30 * * * *"` = every 30 minutes
-- `"0 9-21 * * *"` = every hour between 9am–9pm UTC
-
-Note: GitHub Actions cron can be delayed by a few minutes during busy periods.
-
-### Check multiple courses
-
-Change `TARGET_COURSE` to a broader match, or modify `check_availability()`
-to check a list of target names.
-
-## Troubleshooting
-
-- **"Failed to fetch course data"** — the API endpoint may have changed,
-  or CourseProgress may be doing maintenance. Check if the booking website
-  itself is working.
-- **No notification received** — make sure your ntfy topic matches exactly
-  in both the script and the app. Test manually:
-  `curl -d "test" https://ntfy.sh/YOUR-TOPIC`
-- **GitHub Actions not running** — check the Actions tab for errors.
-  Scheduled workflows are automatically disabled after 60 days of repo
-  inactivity; just push a commit or re-enable manually.
-
-## Cost
-
-Completely free:
-- ntfy.sh is free for this kind of usage
-- GitHub Actions free tier gives you 2,000 minutes/month — this uses ~30
+- `.seen_course_ids.json` records courses already alerted on as new. Actions
+  runners start fresh each time, so the file is only updated when committed
+  back to the repo.
+- Scheduled workflows are disabled after 60 days without repo activity; push a
+  commit or re-enable them from the Actions tab.
+- Free to run: ntfy.sh is free for this usage, and an hourly check fits easily
+  within the GitHub Actions free tier.

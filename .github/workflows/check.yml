@@ -1,11 +1,8 @@
 name: Check Ice Skating Availability
 
 on:
-  # Run every hour
   schedule:
     - cron: "0 * * * *"
-
-  # Also allow manual runs (handy for testing)
   workflow_dispatch:
 
 jobs:
@@ -23,5 +20,6 @@ jobs:
 
       - name: Run availability check
         env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           PYTHONUNBUFFERED: "1"
-        run: python -u check_courses.py 2>&1
+        run: python check_courses.py
