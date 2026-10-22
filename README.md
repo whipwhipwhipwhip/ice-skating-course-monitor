@@ -59,10 +59,14 @@ Without `NTFY_TOPIC` set, the script prints what it would have sent instead.
 
 ## Notes
 
-- `.seen_course_ids.json` records courses already alerted on as new. Actions
-  runners start fresh each time, so the file is only updated when committed
-  back to the repo.
+- `.seen_course_ids.json` records courses already alerted on as new. The
+  workflow commits it back to the repo whenever it changes, so pull before
+  pushing your own changes.
 - Scheduled workflows are disabled after 60 days without repo activity; push a
   commit or re-enable them from the Actions tab.
 - Free to run: ntfy.sh is free for this usage, and an hourly check fits easily
   within the GitHub Actions free tier.
+
+## License
+
+[MIT](LICENSE)

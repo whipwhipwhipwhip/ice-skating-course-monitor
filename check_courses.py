@@ -49,8 +49,7 @@ ALERT_NEW_COURSES = True
 # Treat the topic like a password: anyone who knows it can read your alerts.
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "")
 
-# Course IDs already alerted on as new. Only persists between runs if the
-# file is committed back or the script runs somewhere with a stable disk.
+# Course IDs already alerted on as new. The workflow commits this back.
 SEEN_FILE = ".seen_course_ids.json"
 
 
